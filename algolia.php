@@ -10,10 +10,11 @@
  * Autoloader for all Kirby Algolia classes and dependencies
  */
 load([
-  'kirby\\algolia'        => __DIR__ . DS . 'lib' . DS . 'algolia.php',
+  'kirby\\algolia'          => __DIR__ . DS . 'lib' . DS . 'algolia.php',
+  'kirby\\algolia\\results' => __DIR__ . DS . 'lib' . DS . 'algolia' . DS . 'results.php',
   
   // Official Algolia PHP API client
-  'algoliasearch\\client' => __DIR__ . DS . 'vendor' . DS . 'algolia-client' . DS . 'algoliasearch.php'
+  'algoliasearch\\client'   => __DIR__ . DS . 'vendor' . DS . 'algolia-client' . DS . 'algoliasearch.php'
 ]);
 
 /**

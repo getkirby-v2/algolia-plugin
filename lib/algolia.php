@@ -2,15 +2,15 @@
 
 namespace Kirby;
 
+// Internal dependencies
+use Kirby\Algolia\Results;
+
 // Kirby dependencies
 use A;
 use C;
-use Collection;
 use Error;
 use Field;
-use Obj;
 use Page;
-use Pagination;
 
 // Vendor dependencies
 use AlgoliaSearch\Client as AlgoliaClient;
@@ -74,17 +74,8 @@ class Algolia {
     // Start the search
     $results = $this->getIndex()->search($query, $options);
     
-    // Convert the results to Obj objects
-    $hits = array_map(function($hit) {
-      return new Obj($hit);
-    }, $results['hits']);
-    
-    // Return a paginated Collection object
-    $collection = new Collection($hits);
-    $pagination = new Pagination($results['nbHits'], $results['hitsPerPage'], compact('page'));
-    $collection->paginate($pagination);
-    
-    return $collection;
+    // Return a collection of the results
+    return new Results($results);
   }
   
   /**

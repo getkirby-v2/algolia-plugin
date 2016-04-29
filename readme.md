@@ -135,12 +135,31 @@ Please note that manual indexing will use roughly as many Algolia "Operations" a
 The plugin also provides a method to query/search the index from the backend. It is generally recommended to use [Algolia's JavaScript library](https://www.algolia.com/doc/javascript#quick-start) to avoid the round-trip to your server, but you should also have a server-side fallback results page, which you can implement using the `search` method:
 
 ```php
-algolia()->search($query, $page = 1, $options = array());
+$results = algolia()->search($query, $page = 1, $options = array());
 ```
 
 The `$options` array can be used to override your default values in the `algolia.search.options` option.
 
 **Note**: The `$page` parameter starts at `1` while Algolia uses "zero based" pagination (where the parameter starts at `0`). The plugin converts between these formats automatically to allow you to use Kirby's collection pagination.
+
+### Getting metadata about the results
+
+Algolia returns metadata together with the results. You can get this data from the results collection:
+
+```php
+// Total count of results
+echo 'There are ' . $results->totalCount() . ' results.';
+
+// Algolia server processing time in ms
+echo 'Processing time: ' . $results->processingTime();
+
+// Search query
+echo 'You searched for ' . esc($results->query()) . '.';
+
+// Algolia search parameter string
+// Useful when debugging search requests
+echo 'Search params: ' . $results->params();
+```
 
 ### Example
 
@@ -164,7 +183,7 @@ return function($site, $pages, $page) {
     $pagination = null;
   }
 
-  return compact('query', 'results', 'pagination');
+  return compact('results', 'pagination');
 
 };
 ```
@@ -175,7 +194,7 @@ return function($site, $pages, $page) {
 <?php snippet('header') ?>
 
 <form>
-  <input type="search" name="q" value="<?php echo esc($query) ?>">
+  <input type="search" name="q" value="<?php echo esc($results->query()) ?>">
   <input type="submit" value="Search">
 </form>
 
