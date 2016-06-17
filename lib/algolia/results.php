@@ -33,7 +33,7 @@ class Results extends Collection {
       'page'             => 0,
       'nbHits'           => 0,
       'nbPages'          => 0,
-      'hitsPerPage'      => 0,
+      'hitsPerPage'      => 20,
       'processingTimeMS' => 0,
       'query'            => '',
       'params'           => ''
