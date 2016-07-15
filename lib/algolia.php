@@ -266,6 +266,15 @@ class Algolia {
   }
   
   /**
+   * Returns the number of indexable pages
+   *
+   * @return int
+   */
+  public function objectCount() {
+    return site()->index()->filter(array($this, 'isIndexable'))->count();
+  }
+  
+  /**
    * Returns an array of data to send to Algolia
    * Includes all whitelisted pages and formats their data according to the configuration
    *
