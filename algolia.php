@@ -28,7 +28,7 @@ function algolia() {
 
 // Register the Panel widget
 if(c::get('algolia.widget', true) && function_exists('panel')) {
-  $kirby->set('widget', 'algolia', __DIR__ . DS . 'widgets' . DS . 'algolia');
+  kirby()->set('widget', 'algolia', __DIR__ . DS . 'widgets' . DS . 'algolia');
   
   // Register the route for the widget
   panel()->routes([
