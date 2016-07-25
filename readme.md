@@ -10,6 +10,10 @@ Using Algolia requires an [account](https://www.algolia.com/users/sign_up). Free
 
 You can read more about Algolia on their [website](https://www.algolia.com) and in their [documentation](https://www.algolia.com/doc).
 
+## Requirements
+
+This plugin requires Kirby 2.3 or later and an account at Algolia.
+
 ## Installation
 
 To install the plugin, please put it in the `site/plugins` directory and add the necessary configuration options (see below) to your `site/config.php`.
