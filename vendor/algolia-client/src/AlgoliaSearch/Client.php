@@ -110,7 +110,7 @@ class Client
     }
 
     /**
-     * Change the default connect timeout of 2s to a custom value
+     * Change the default connect timeout of 1s to a custom value
      * (only useful if your server has a very slow connectivity to Algolia backend).
      *
      * @param int $connectTimeout the connection timeout
@@ -248,9 +248,9 @@ class Client
         return $this->request(
             $this->context,
             'POST',
-            '/1/indexes/*/queries?strategy='.$strategy,
+            '/1/indexes/*/queries',
             array(),
-            array('requests' => $requests),
+            array('requests' => $requests, 'strategy' => $strategy),
             $this->context->readHostsArray,
             $this->context->connectTimeout,
             $this->context->searchTimeout
@@ -743,6 +743,10 @@ class Client
                 throw $e;
             } catch (\Exception $e) {
                 $exceptions[$host] = $e->getMessage();
+                if ($context instanceof ClientContext) {
+                    $context->addFailingHost($host); // Needs to be before the rotation otherwise it will not be rotated
+                    $context->rotateHosts();
+                }
             }
         }
         throw new AlgoliaException('Hosts unreachable: '.implode(',', $exceptions));
@@ -832,7 +836,7 @@ class Client
 
         curl_setopt($curlHandle, CURLOPT_HTTPHEADER, $curlHeaders);
 
-        curl_setopt($curlHandle, CURLOPT_USERAGENT, 'Algolia for PHP '.Version::get());
+        curl_setopt($curlHandle, CURLOPT_USERAGENT, Version::getUserAgent());
         //Return the output instead of printing it
         curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlHandle, CURLOPT_FAILONERROR, true);
@@ -914,7 +918,7 @@ class Client
         curl_close($curlHandle);
 
         if (intval($http_status / 100) == 4) {
-            throw new AlgoliaException(isset($answer['message']) ? $answer['message'] : $http_status + ' error');
+            throw new AlgoliaException(isset($answer['message']) ? $answer['message'] : $http_status.' error');
         } elseif (intval($http_status / 100) != 2) {
             throw new \Exception($http_status.': '.$response);
         }
@@ -1022,5 +1026,10 @@ class Client
         $client = new static($appId, $apiKey, $hostsArray, $options);
 
         return $client->getPlacesIndex();
+    }
+
+    public function getContext()
+    {
+        return $this->context;
     }
 }
