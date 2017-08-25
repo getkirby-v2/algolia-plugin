@@ -197,7 +197,7 @@ return function($site, $pages, $page) {
     $pagination = null;
   }
 
-  return compact('results', 'pagination');
+  return compact('results', 'pagination', 'query');
 
 };
 ```
@@ -208,7 +208,7 @@ return function($site, $pages, $page) {
 <?php snippet('header') ?>
 
 <form>
-  <input type="search" name="q" value="<?php echo esc($results->query()) ?>">
+  <input type="search" name="q" value="<?php echo esc($query) ?>">
   <input type="submit" value="Search">
 </form>
 
