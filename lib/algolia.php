@@ -98,7 +98,19 @@ class Algolia {
     $tempIndex->clearIndex();
     
     // Add all objects back in
-    $tempIndex->saveObjects($this->objects());
+    $queue = array();
+    foreach(site()->index()->filter(array($this, 'isIndexable')) as $p) {
+      $queue[] = $this->formatPage($p);
+      
+      // Always upload objects in batches of 100 for performance reasons
+      if(count($queue) >= 100) {
+        $tempIndex->saveObjects($queue);
+        $queue = array();
+      }
+    }
+    
+    // Upload the remaining objects
+    $tempIndex->saveObjects($queue);
     
     // Move the temp index to the main index
     $this->algolia->moveIndex($this->getIndexName(true), $this->getIndexName());
@@ -287,16 +299,6 @@ class Algolia {
    */
   public function objectCount() {
     return site()->index()->filter(array($this, 'isIndexable'))->count();
-  }
-  
-  /**
-   * Returns an array of data to send to Algolia
-   * Includes all whitelisted pages and formats their data according to the configuration
-   *
-   * @return array
-   */
-  protected function objects() {
-    return site()->index()->filter(array($this, 'isIndexable'))->toArray(array($this, 'formatPage'));
   }
   
   /**
