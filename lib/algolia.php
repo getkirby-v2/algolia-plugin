@@ -149,7 +149,6 @@ class Algolia {
   
   /**
    * Deletes a page from the index
-   * Used by Panel hooks
    *
    * @param Page|string $id Kirby page or page ID
    */
@@ -157,6 +156,22 @@ class Algolia {
     if($id instanceof Page) $id = $id->id();
     
     $this->getIndex()->deleteObject($id);
+  }
+  
+  /**
+   * Deletes a page and all its children from the index
+   * Used by Panel hooks
+   *
+   * @param Page|string $page Kirby page or page ID
+   */
+  public function deletePageRecursive($page) {
+    if(is_string($page)) $page = page($page);
+    if(!$page) return false;
+    
+    $this->deletePage($page);
+    foreach($page->children() as $p) {
+      $this->deletePageRecursive($p);
+    }
   }
   
   /**

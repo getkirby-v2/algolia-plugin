@@ -63,7 +63,7 @@ if(c::get('algolia.autoindex', true)) {
   });
 
   kirby()->hook('panel.page.delete', function($page) {
-    return algolia()->deletePage($page);
+    return algolia()->deletePageRecursive($page);
   });
 
   kirby()->hook('panel.page.sort', function($page) {
