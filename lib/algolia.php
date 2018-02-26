@@ -236,19 +236,19 @@ class Algolia {
     $templates = c::get('algolia.templates', array());
     $pageTemplate = $page->intendedTemplate();
     
-    // Merge fields with the default fields
+    // Merge fields with the default fields and make array structure consistent
     if(isset($templates[$pageTemplate]['fields'])) {
-      $fields = array_unique(array_merge($fields, $templates[$pageTemplate]['fields']), SORT_REGULAR);
+      $fields = array_merge(
+        static::cleanUpFields($fields),
+        static::cleanUpFields($templates[$pageTemplate]['fields'])
+      );
+    } else {
+      $fields = static::cleanUpFields($fields);
     }
     
     // Build resulting data array
     $data = array('objectID' => $page->id());
     foreach($fields as $name => $operation) {
-      if(is_int($name)) {
-        $name = $operation;
-        $operation = null;
-      }
-      
       if(is_callable($operation)) {
         // Custom function
         $data[$name] = call_user_func($operation, $page);
@@ -328,5 +328,30 @@ class Algolia {
     } else {
       return $index;
     }
+  }
+  
+  /**
+   * Makes an array of fields and operations consistent
+   * for formatPage()
+   *
+   * @param  array $fields
+   * @return array
+   */
+  protected static function cleanUpFields($fields) {
+    $result = array();
+    
+    foreach($fields as $name => $operation) {
+      // Make sure the name is always the key, even if no operation was given
+      if(is_int($name)) {
+        $name = $operation;
+        $operation = null;
+      }
+      
+      $result[$name] = $operation;
+    }
+    
+    // Make sure that the fields are sorted alphabetically for consistence
+    ksort($result);
+    return $result;
   }
 }
