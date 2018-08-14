@@ -16,7 +16,7 @@ This plugin requires Kirby 2.3 or later and an account at Algolia.
 
 ## Installation
 
-To install the plugin, please put it in the `site/plugins` directory and add the necessary configuration options (see below) to your `site/config.php`.
+To install the plugin, please put it in the `site/plugins` directory and add the necessary configuration options (see below) to your `site/config/config.php`.
 
 ## Configuration
 
