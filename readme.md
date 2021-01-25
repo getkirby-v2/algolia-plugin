@@ -1,4 +1,4 @@
-# Kirby Algolia Plugin
+# Kirby 2 Algolia Plugin
 
 This plugin integrates with the [Algolia service](https://www.algolia.com) to index and search through your Kirby website.
 
